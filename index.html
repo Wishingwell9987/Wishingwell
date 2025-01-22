@@ -68,45 +68,6 @@
             background: url('wishing-well.jpg') no-repeat center/cover;
         }
 
-        .animation-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: none;
-        }
-
-        .coin {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            background: url('coin.png') no-repeat center/cover;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: tossCoin 2s forwards;
-        }
-
-        @keyframes tossCoin {
-            0% { top: 0; transform: translateX(-50%) rotateY(0deg); opacity: 1; }
-            50% { top: 40%; transform: translateX(-50%) rotateY(360deg); opacity: 1; }
-            100% { top: 80%; transform: translateX(-50%) rotateY(720deg); opacity: 0; }
-        }
-
-        .message {
-            font-size: 24px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.5);
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            display: none;
-            z-index: 10;
-        }
-
         .wish-input {
             margin: 20px;
             padding: 10px;
@@ -118,37 +79,28 @@
             background: rgba(0, 0, 0, 0.5);
             color: white;
             box-shadow: 0 0 10px gold, 0 0 20px goldenrod;
-            animation: glow 2s infinite alternate;
         }
 
-        @keyframes glow {
-            from {
-                box-shadow: 0 0 10px gold, 0 0 20px goldenrod;
-            }
-            to {
-                box-shadow: 0 0 20px gold, 0 0 40px goldenrod;
-            }
+        .magical-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 30px;
+            color: gold;
+            text-shadow: 0px 0px 10px gold, 0px 0px 20px goldenrod;
+            animation: fadeIn 3s forwards;
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(255, 223, 0, 0.8);
+            z-index: 10;
+            width: auto;
+            max-width: 80%;
         }
 
-       .magical-message {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 30px;
-    color: gold;
-    text-shadow: 0px 0px 10px gold, 0px 0px 20px goldenrod;
-    animation: fadeIn 3s forwards;
-    display: none;
-    text-align: center;
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.8);
-    border-radius: 10px;
-    box-shadow: 0px 5px 15px rgba(255, 223, 0, 0.8);
-    z-index: 10;
-    width: auto;
-    max-width: 80%;
-}
         @keyframes fadeIn {
             0% { opacity: 0; transform: scale(0.5); }
             100% { opacity: 1; transform: scale(1); }
@@ -171,15 +123,12 @@
 
         <input type="text" id="wishInput" class="wish-input" placeholder="Enter Your Wish" style="display: none;">
         <button class="button" id="makeWishButton" onclick="makeAWish()" style="display: none;">Make a Wish</button>
+        <button class="button" id="confirmPayment" onclick="confirmPayment()" style="display: none;">
+            I've Paid, Continue to Wish
+        </button>
     </div>
 
-    <div class="well-container">
-        <div class="animation-container" id="animationContainer">
-            <div class="coin" id="coin"></div>
-        </div>
-    </div>
-
-    <p class="message" id="wishMessage"></p>
+    <div class="well-container"></div>
 
     <p id="magicalMessage" class="magical-message">✨ Your wish has been granted. Believe in magic! ✨</p>
 
@@ -192,14 +141,27 @@
         }
 
         function selectToken(amount) {
-            alert(`You selected ₹${amount} token. Redirecting to payment...`);
-            setTimeout(() => {
-                tokenCount++;
-                alert('Payment successful! You can now make a wish.');
-                document.getElementById('tokenOptions').style.display = 'none';
-                document.getElementById('wishInput').style.display = 'block';
-                document.getElementById('makeWishButton').style.display = 'block';
-            }, 2000);
+            const tokenLinks = {
+                1: "https://rzp.io/rzp/c7I1J9g",
+                10: "https://rzp.io/rzp/vmimfIuK",
+                100: "https://rzp.io/rzp/tmDvmAua"
+            };
+
+            if (tokenLinks[amount]) {
+                alert(`You selected ₹${amount} token. Redirecting to payment...`);
+                window.location.href = tokenLinks[amount];
+                document.getElementById('confirmPayment').style.display = 'block';
+            } else {
+                alert("Invalid token amount.");
+            }
+        }
+
+        function confirmPayment() {
+            alert('Payment verified! You can now make a wish.');
+            tokenCount++;
+            document.getElementById('confirmPayment').style.display = 'none';
+            document.getElementById('wishInput').style.display = 'block';
+            document.getElementById('makeWishButton').style.display = 'block';
         }
 
         function makeAWish() {
@@ -211,28 +173,15 @@
                 }
 
                 tokenCount--;
-                document.getElementById('animationContainer').style.display = 'block';
-                document.getElementById('makeWishButton').style.display = 'none';
+                alert(`Your wish "${wish}" is being fulfilled!`);
                 document.getElementById('wishInput').style.display = 'none';
+                document.getElementById('makeWishButton').style.display = 'none';
+                document.getElementById('magicalMessage').style.display = 'block';
 
-                const coin = document.getElementById('coin');
-                coin.style.animation = 'tossCoin 2s forwards';
-
-                coin.addEventListener('animationend', () => {
-                    document.getElementById('animationContainer').style.display = 'none';
-                    const message = document.getElementById('wishMessage');
-                    message.textContent = `Your wish "${wish}" is being fulfilled!`;
-                    message.style.display = 'block';
-
-                    setTimeout(() => {
-                        message.style.display = 'none';
-                        document.getElementById('magicalMessage').style.display = 'block';
-                        document.getElementById('addTokenButton').style.display = 'block';
-                    }, 3000);
-                });
-
-                const audio = new Audio('water-splash.mp3');
-                audio.play();
+                setTimeout(() => {
+                    document.getElementById('magicalMessage').style.display = 'none';
+                    document.getElementById('addTokenButton').style.display = 'block';
+                }, 3000);
             } else {
                 alert("Please add a token to make a wish.");
             }
