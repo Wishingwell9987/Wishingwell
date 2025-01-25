@@ -150,15 +150,15 @@
 
         function selectToken(amount) {
             const tokenLinks = {
-                1: "https://rzp.io/rzp/c7I1J9g",
-                10: "https://rzp.io/rzp/vmimfIuK",
-                100: "https://rzp.io/rzp/tmDvmAua"
+                1: "razorpay.me/@wishingwell",
+                10: "razorpay.me/@wishingwell",
+                100: "razorpay.me/@wishingwell"
             };
 
             if (tokenLinks[amount]) {
                 // Using Razorpay Payment Gateway
                 var options = {
-                    "key": "YOUR_RAZORPAY_KEY", // Enter your Razorpay key here
+                    "key": "razorpay.me/@wishingwell", // Enter your Razorpay key here
                     "amount": amount * 100, // Amount in paise
                     "currency": "INR",
                     "name": "Magical Wishing Well",
