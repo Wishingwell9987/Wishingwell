@@ -142,7 +142,7 @@
             let amountInPaise = amount * 100;
             
             // Razorpay payment link with fixed amount
-            let paymentURL = `https://razorpay.me/@wishingwell?amount=${amountInPaise}`;
+            let paymentURL = `https://razorpay.me/@wishingwell`;
             
             // Save new token balance before redirecting
             localStorage.setItem("tokenBalance", tokenBalance + Math.floor(amount / 10)); // 1 token per ₹10
