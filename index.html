@@ -15,31 +15,21 @@
             text-align: center;
         }
 
-        header {
-            padding: 20px;
-            font-size: 50px;
-            text-transform: uppercase;
-            color: gold;
-            text-shadow: 0px 0px 10px gold, 0px 0px 20px goldenrod;
-        }
-
-        .description {
-            margin: 20px auto;
-            font-size: 24px;
-            width: 90%;
-            max-width: 800px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.5);
+        .token-balance {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: gold;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
         }
 
         .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-top: 20px;
+            margin-top: 100px;
         }
 
         .button {
@@ -51,163 +41,118 @@
             background: linear-gradient(to right, #ffd700, #ff9900);
             color: #fff;
             cursor: pointer;
-            box-shadow: 0px 5px 15px rgba(255, 223, 0, 0.8);
-            font-family: 'Almendra SC', cursive;
-            transition: transform 0.3s, box-shadow 0.3s;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
-        .button:hover {
-            transform: scale(1.1);
-            box-shadow: 0px 5px 25px rgba(255, 223, 0, 1);
-        }
-
-        .well-container {
-            position: relative;
-            height: 400px;
-            width: 400px;
-            margin: 50px auto;
-            background: url('wishing-well.jpg') no-repeat center/cover;
-        }
-
-        .wish-input {
-            margin: 20px;
-            padding: 10px;
-            font-size: 18px;
-            border: 2px solid gold;
-            border-radius: 10px;
-            width: 80%;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            box-shadow: 0 0 10px gold, 0 0 20px goldenrod;
-        }
-
-        footer {
-            margin-top: 50px;
-            font-size: 14px;
-            color: #fff;
-            text-shadow: 0px 0px 5px #000;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px 10px;
-            width: 100%;
+        .modal {
+            display: none;
             position: fixed;
-            bottom: 0;
-            left: 0;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(to bottom, #fff8dc, #ffd700);
+            color: #5b3600;
+            padding: 20px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 400px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            font-family: 'Almendra SC', cursive;
         }
 
-        footer a {
+        .modal button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: linear-gradient(to right, #ffcc00, #ff9900);
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .footer a {
             color: gold;
-            text-decoration: none;
-            margin: 0 10px;
+            font-weight: bold;
+            text-shadow: 0px 0px 5px rgba(255, 223, 0, 0.8);
+            transition: text-shadow 0.3s ease-in-out;
+            cursor: pointer;
         }
 
-        footer a:hover {
-            text-decoration: underline;
+        .footer a:hover {
+            text-shadow: 0px 0px 15px rgba(255, 223, 0, 1);
         }
     </style>
 </head>
 <body>
-    <header>Magical Wishing Well</header>
-
-    <div class="description">
-        Welcome to the Magical Wishing Well! This platform allows you to make wishes by adding tokens. 
-        Choose a token, make your payment (including UPI), and submit your wish.
+    <div class="token-balance" onclick="openModal('wallet')">Tokens: <span id="tokenCount">0</span></div>
+    <div class="container" id="mainPage">
+        <h1 style="color: gold;">Magical Wishing Well</h1>
+        <p>Believe in magic, make a wish, and watch it come true!</p>
+        <button class="button" onclick="openModal('wishPage')">Make a Wish</button>
     </div>
-
-    <div class="container">
-        <button class="button" id="addTokenButton" onclick="showTokenOptions()">Add a Token</button>
-
-        <div id="tokenOptions" style="display: none;">
-            <button class="button" onclick="selectToken(1)">₹1 Token</button>
-            <button class="button" onclick="selectToken(10)">₹10 Token</button>
-            <button class="button" onclick="selectToken(100)">₹100 Token</button>
-        </div>
-
-        <input type="text" id="wishInput" class="wish-input" placeholder="Enter Your Wish" style="display: none;">
-        <button class="button" id="makeWishButton" onclick="makeAWish()" style="display: none;">Make a Wish</button>
-        <button class="button" id="confirmPayment" onclick="confirmPayment()" style="display: none;">
-            I've Paid, Continue to Wish
-        </button>
+    <div class="modal" id="wallet">
+        <h2>Add Tokens</h2>
+        <p>Enter amount (min ₹10):</p>
+        <input type="number" id="amount" min="10" style="border: 2px solid gold; border-radius: 10px; padding: 5px; background: #fff8dc;">
+        <button class="button" onclick="addToken()">Pay</button>
+        <button onclick="closeModal('wallet')">Close</button>
     </div>
-
-    <div class="well-container"></div>
-
-    <footer>
-        Contact Us: <a href="mailto:manage9987@gmail.com">manage9987@gmail.com</a> |
-        <a href="#" onclick="showModal('terms')">Terms and Conditions</a> |
-        <a href="#" onclick="showModal('privacy')">Privacy Policy</a> |
-        <a href="#" onclick="showModal('refund')">Cancellation & Refund Policy</a>
-    </footer>
-
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <div class="modal" id="wishPage">
+        <h2>Make a Wish</h2>
+        <textarea id="wishText" placeholder="Write your wish..." rows="4" cols="30"></textarea>
+        <button class="button" onclick="submitWish()">Submit Wish</button>
+        <button onclick="closeModal('wishPage')">Close</button>
+    </div>
+    <div class="modal" id="privacy"><h2>Privacy Policy</h2><p>Your data is safe. We do not share information.</p><button onclick="closeModal('privacy')">Close</button></div>
+    <div class="modal" id="refund"><h2>Refund Policy</h2><p>No refunds after purchase.</p><button onclick="closeModal('refund')">Close</button></div>
+    <div class="modal" id="contact"><h2>Contact Us</h2><p>Email: <a href="mailto:manage9987@gmail.com">manage9987@gmail.com</a></p><button onclick="closeModal('contact')">Close</button></div>
+    <div class="footer">
+        <a onclick="openModal('privacy')">Privacy Policy</a> | 
+        <a onclick="openModal('refund')">Refund Policy</a> | 
+        <a onclick="openModal('contact')">Contact Us</a>
+    </div>
     <script>
-        let tokenCount = 0;
-
-        function showTokenOptions() {
-            document.getElementById('addTokenButton').style.display = 'none';
-            document.getElementById('tokenOptions').style.display = 'block';
+        let tokenBalance = parseInt(localStorage.getItem("tokenBalance")) || 0;
+        document.getElementById("tokenCount").textContent = tokenBalance;
+        
+        function openModal(id) {
+            document.getElementById(id).style.display = "block";
         }
-
-        function selectToken(amount) {
-            const tokenLinks = {
-                1: "razorpay.me/@wishingwell",
-                10: "razorpay.me/@wishingwell",
-                100: "razorpay.me/@wishingwell"
-            };
-
-            if (tokenLinks[amount]) {
-                // Using Razorpay Payment Gateway
-                var options = {
-                    "key": "razorpay.me/@wishingwell", // Enter your Razorpay key here
-                    "amount": amount * 100, // Amount in paise
-                    "currency": "INR",
-                    "name": "Magical Wishing Well",
-                    "description": "Make a Wish",
-                    "image": "https://example.com/your-logo.png",
-                    "handler": function(response) {
-                        alert("Payment successful! You can now make a wish.");
-                        confirmPayment();
-                    },
-                    "prefill": {
-                        "name": "",
-                        "email": "",
-                        "contact": ""
-                    },
-                    "theme": {
-                        "color": "#F37254"
-                    }
-                };
-                
-                var rzp1 = new Razorpay(options);
-                rzp1.open();
+        
+        function closeModal(id) {
+            document.getElementById(id).style.display = "none";
+        }
+        
+        function addToken() {
+            let amount = document.getElementById("amount").value;
+            if (amount >= 10) {
+                localStorage.setItem("tokenBalance", tokenBalance + 1);
+                document.getElementById("tokenCount").textContent = ++tokenBalance;
+                alert("Redirecting to Razorpay...");
+                window.location.href = "https://rzp.io/rzp/2hn48gI";
             } else {
-                alert("Invalid token amount.");
+                alert("Minimum amount is ₹10");
             }
         }
-
-        function confirmPayment() {
-            alert('Payment verified! You can now make a wish.');
-            tokenCount++;
-            document.getElementById('confirmPayment').style.display = 'none';
-            document.getElementById('wishInput').style.display = 'block';
-            document.getElementById('makeWishButton').style.display = 'block';
-        }
-
-        function makeAWish() {
-            if (tokenCount > 0) {
-                const wish = document.getElementById('wishInput').value;
-                if (!wish) {
-                    alert('Please enter your wish!');
-                    return;
-                }
-
-                tokenCount--;
-                alert(`Your wish "${wish}" is being fulfilled!`);
-                document.getElementById('wishInput').style.display = 'none';
-                document.getElementById('makeWishButton').style.display = 'none';
-                document.getElementById('addTokenButton').style.display = 'block';
+        
+        function submitWish() {
+            if (tokenBalance > 0) {
+                alert("Your wish has been made! A coin is tossed into the well.");
+                localStorage.setItem("tokenBalance", --tokenBalance);
+                document.getElementById("tokenCount").textContent = tokenBalance;
+                closeModal('wishPage');
             } else {
-                alert("Please add a token to make a wish.");
+                alert("Not enough tokens!");
             }
         }
     </script>
