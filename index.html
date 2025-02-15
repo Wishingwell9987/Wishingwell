@@ -133,38 +133,38 @@
             document.getElementById(id).style.display = "none";
         }
         
-        function addToken() {
+   function addToken() {
     let amount = document.getElementById("amount").value;
-    
+
     if (amount >= 10) {
         if (confirm(`You are about to add ₹${amount} to your wallet. Proceed?`)) {
-            // Convert to paise (Razorpay API works with paise)
-            let amountInPaise = amount * 100;
-            
-            // Razorpay payment link with fixed amount
-            let paymentURL = `https://razorpay.me/@wishingwell`;
-            
-            // Save new token balance before redirecting
-            localStorage.setItem("tokenBalance", tokenBalance + Math.floor(amount / 10)); // 1 token per ₹10
-            document.getElementById("tokenCount").textContent = tokenBalance + Math.floor(amount / 10);
+            // Redirect to Razorpay in a new tab
+            window.open("https://razorpay.me/@wishingwell", "_blank");
 
-            // Redirect to Razorpay with fixed amount
-            window.location.href = paymentURL;
+            // Start a 20-second timer to update tokens
+            setTimeout(() => {
+                tokenBalance++; // Add 1 token
+                localStorage.setItem("tokenBalance", tokenBalance);
+                document.getElementById("tokenCount").textContent = tokenBalance;
+                alert("1 token added to your account!");
+            }, 20000); // 20 seconds delay
         }
     } else {
         alert("Minimum amount is ₹10");
     }
 }
         function submitWish() {
-            if (tokenBalance > 0) {
-                alert("Your wish has been made! A coin is tossed into the well.");
-                localStorage.setItem("tokenBalance", --tokenBalance);
-                document.getElementById("tokenCount").textContent = tokenBalance;
-                closeModal('wishPage');
-            } else {
-                alert("Not enough tokens!");
-            }
-        }
+    if (tokenBalance > 0) {
+        tokenBalance--; // Reduce token balance
+        localStorage.setItem("tokenBalance", tokenBalance); // Store updated balance
+        document.getElementById("tokenCount").textContent = tokenBalance; // Update UI
+
+        alert("Your wish has been made! A coin is tossed into the well.");
+        closeModal('wishPage');
+    } else {
+        alert("Not enough tokens!");
+    }
+}
     </script>
 </body>
 </html>
